@@ -15,7 +15,7 @@ export default class ArtworkCreate2 extends Vue {
 
     public loading = false
 
-    public output = ""
+    public output: string[] = []
 
     // 创建表单
 
@@ -48,7 +48,6 @@ export default class ArtworkCreate2 extends Vue {
             Api.msg.err("请检查表单")
             return false
         }
-        this.output = ""
         this.loading = true
         const query = {
             ...this.formModel,
@@ -57,7 +56,7 @@ export default class ArtworkCreate2 extends Vue {
         const res = await NaApi.artwork.create(query).finally(() => {
             this.loading = false
         })
-        this.output = "/upload/" + res.OutputFile
+        this.output.unshift("/upload/" + res.OutputFile)
     }
 
     // 图片选择
@@ -76,7 +75,10 @@ export default class ArtworkCreate2 extends Vue {
         return Promise.resolve(data)
     }
 
+    // 清空图片
+
     public imageClear() {
+        this.output = []
         this.imageOrigin = ''
         this.formModel.InputImage = ''
     }
@@ -176,10 +178,17 @@ export default class ArtworkCreate2 extends Vue {
                         </template>
                     </t-upload>
                 </t-form-item>
+                <t-form-item v-if="output.length > 0" name="NegativePrompt" label="生成结果">
+                    <t-image-viewer :images="output">
+                        <template #trigger="{ open }">
+                            <t-image :src="output[0]" :gallery="true" class="image-output" @click="open" />
+                        </template>
+                    </t-image-viewer>
+                </t-form-item>
                 <t-form-item>
                     <t-space>
                         <t-button theme="primary" type="submit" :loading="loading">
-                            提交
+                            {{ output.length > 1 ? "重新生成" : "生成" }}
                         </t-button>
                         <t-button theme="warning" @click="imageClear">
                             清除图片
@@ -188,10 +197,6 @@ export default class ArtworkCreate2 extends Vue {
                 </t-form-item>
             </t-form>
         </t-card>
-
-        <t-card v-if="output" title="生成结果" hover-shadow header-bordered>
-            <t-image :src="output" />
-        </t-card>
     </t-space>
 </template>
 
@@ -199,5 +204,10 @@ export default class ArtworkCreate2 extends Vue {
 .cropper {
     width: 480px;
     height: 320px;
+}
+
+.image-output {
+    width: 100%;
+    max-width: 480px;
 }
 </style>

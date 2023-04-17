@@ -14,7 +14,7 @@ export default class ArtworkCreate extends Vue {
 
     public loading = false
 
-    public output = ""
+    public output: string[] = []
 
     // 创建表单
 
@@ -49,7 +49,13 @@ export default class ArtworkCreate extends Vue {
         const res = await NaApi.artwork.create(this.formModel).finally(() => {
             this.loading = false
         })
-        this.output = "/upload/" + res.OutputFile
+        this.output.unshift("/upload/" + res.OutputFile)
+    }
+
+    // 清空图片
+
+    public imageClear() {
+        this.output = []
     }
 }
 </script>
@@ -97,16 +103,31 @@ export default class ArtworkCreate extends Vue {
                     <t-textarea v-model="formModel.NegativePrompt" :autosize="{ minRows: 3, maxRows: 15 }" :maxlength="512"
                         :placeholder="meta.negativePromptDesc" />
                 </t-form-item>
+                <t-form-item v-if="output.length > 0" name="NegativePrompt" label="生成结果">
+                    <t-image-viewer :images="output">
+                        <template #trigger="{ open }">
+                            <t-image :src="output[0]" :gallery="true" class="image-output" @click="open" />
+                        </template>
+                    </t-image-viewer>
+                </t-form-item>
                 <t-form-item>
-                    <t-button theme="primary" type="submit" :loading="loading">
-                        提交
-                    </t-button>
+                    <t-space>
+                        <t-button theme="primary" type="submit" :loading="loading">
+                            {{ output.length > 1 ? "重新生成" : "生成" }}
+                        </t-button>
+                        <t-button theme="warning" @click="imageClear">
+                            清除图片
+                        </t-button>
+                    </t-space>
                 </t-form-item>
             </t-form>
         </t-card>
-
-        <t-card v-if="output" title="生成结果" hover-shadow header-bordered>
-            <t-image :src="output" />
-        </t-card>
     </t-space>
 </template>
+
+<style lang="scss" scoped>
+.image-output {
+    width: 100%;
+    max-width: 480px;
+}
+</style>
