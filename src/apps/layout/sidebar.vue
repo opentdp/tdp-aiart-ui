@@ -72,7 +72,7 @@ const menuItems: MenuItem[] = [
         title: "首页",
     },
     {
-        icon: "gift",
+        icon: "layers",
         index: "/artwork/list",
         title: "图库",
     },
@@ -87,7 +87,7 @@ const menuItems: MenuItem[] = [
         title: "图生图",
     },
     {
-        icon: "user-avatar",
+        icon: "usergroup",
         index: "/user/list",
         title: "用户管理",
         level: 1,
