@@ -11,15 +11,15 @@ export default defineStore("layout", {
         ThemeMode: "",
         // 后端本号
         Version: "",
-        // 允许注册
+        // 功能开关
         Registrable: false,
         // 前端配置
-        SiteName: "Open TDP",
-        SiteLogo: "",
-        SiteIcon: "",
-        Analytics: "",
-        Copylink: "",
-        Copytext: "",
+        SiteName: vars.SiteName,
+        SiteLogo: "/assets/img/logo.svg",
+        SiteIcon: "/assets/img/icon.svg",
+        Analytics: vars.Analytics,
+        Copylink: "https://www.opentdp.org",
+        Copytext: "Powered by Open TDP",
         IcpCode: "",
     }),
     actions: {
@@ -36,11 +36,10 @@ export default defineStore("layout", {
         async fetchConfig() {
             const res = await NaApi.config.ui()
             Object.keys(res).forEach(k => {
-                Object.assign(this, { [k]: res[k].trim() })
+                const v = res[k].trim()
+                v && Object.assign(this, { [k]: v })
             })
             this.Registrable = res.Registrable == "true"
-            this.SiteName = res.SiteName || vars.SiteName
-            this.Analytics = res.Analytics || vars.Analytics
             this.applyConfig()
         },
         // 执行行内脚本

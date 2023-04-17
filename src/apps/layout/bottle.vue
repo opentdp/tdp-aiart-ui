@@ -31,8 +31,8 @@ export default class LayoutBottle extends Vue {
                 <t-head-menu>
                     <template #logo>
                         <div class="logo">
-                            <img src="/assets/img/logo.svg">
-                            <b>Aiart</b>
+                            <img :src="layout.SiteLogo">
+                            <b>{{ layout.SiteName }}</b>
                         </div>
                     </template>
                     <template #operations>
