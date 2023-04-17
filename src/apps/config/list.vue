@@ -11,7 +11,7 @@ import ConfigUpdate from "./update.vue"
 @Component({
     components: { ConfigUpdate }
 })
-export default class ConfigSystem extends Vue {
+export default class ConfigList extends Vue {
     public loading = true
 
     @Ref
