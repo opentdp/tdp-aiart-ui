@@ -144,7 +144,7 @@ export default class ArtworkCreate2 extends Vue {
                             :label="item.label" />
                     </t-select>
                 </t-form-item>
-                <t-form-item name="Styles" label="输出尺寸">
+                <t-form-item name="Resolution" label="输出尺寸">
                     <t-select v-model="formModel.ResultConfig!.Resolution" @change="onResolutionChange">
                         <t-option value="768:768" label="768x768" />
                         <t-option value="768:1024" label="768x1024" />

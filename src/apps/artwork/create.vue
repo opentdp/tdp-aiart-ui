@@ -82,6 +82,13 @@ export default class ArtworkCreate extends Vue {
                             :label="item.label" />
                     </t-select>
                 </t-form-item>
+                <t-form-item name="Resolution" label="输出尺寸">
+                    <t-select v-model="formModel.ResultConfig!.Resolution">
+                        <t-option value="768:768" label="768x768" />
+                        <t-option value="768:1024" label="768x1024" />
+                        <t-option value="1024:768" label="1024x768" />
+                    </t-select>
+                </t-form-item>
                 <t-form-item name="Prompt" label="文本描述">
                     <t-textarea v-model="formModel.Prompt" :autosize="{ minRows: 3, maxRows: 15 }" :maxlength="512"
                         :placeholder="meta.promptDesc" />
