@@ -35,33 +35,53 @@ export default class ArtworkList extends Vue {
         this.images = res.Items
     }
 
+    // 编辑图片信息
+
+    async updateArtwork(event: MouseEvent, item: ArtworkItem) {
+        this.updateModal.open(item)
+        event.stopPropagation()
+    }
+
 }
 </script>
 
 <template>
     <t-space fixed direction="vertical">
-        <VueFlexWaterfall align-content="start" col="4" col-spacing="10" :break-by-container="true"
-            :break-at="{ 2330: 8, 2070: 7, 1810: 6, 1550: 5, 1290: 4, 1030: 3, 770: 2, 510: 1 }">
-            <t-card v-for="item in images" :key="item.Id" theme="poster2" class="item">
-                <template #default>
-                    <t-image-viewer :images="['/upload/' + item.OutputFile]">
-                        <template #trigger="{ open }">
-                            <t-image :src="'/upload/' + item.OutputFile" @click="open" />
-                        </template>
-                    </t-image-viewer>
-                </template>
-                <template #footer>
-                    <t-comment :author="item.Subject" :content="item.Prompt" />
-                </template>
-                <template #actions>
-                    <t-button variant="text" shape="square" @click="updateModal.open(item)">
-                        <t-icon :name="item.Status == 'private' ? 'browse-off' : 'browse'" />
-                    </t-button>
-                </template>
-            </t-card>
-        </VueFlexWaterfall>
+        <t-breadcrumb>
+            <t-breadcrumb-item to="/dashboard">
+                首页
+            </t-breadcrumb-item>
+            <t-breadcrumb-item>
+                图库
+            </t-breadcrumb-item>
+        </t-breadcrumb>
 
-        <ArtworkUpdate ref="updateModal" @submit="getArtworkList" />
+        <t-space fixed direction="vertical">
+            <VueFlexWaterfall align-content="start" col="4" col-spacing="10" :break-by-container="true"
+                :break-at="{ 2330: 8, 2070: 7, 1810: 6, 1550: 5, 1290: 4, 1030: 3, 770: 2, 510: 1 }">
+                <t-card v-for="item in images" :key="item.Id" theme="poster2" class="item">
+                    <template #default>
+                        <t-image-viewer :images="['/upload/' + item.OutputFile]">
+                            <template #trigger="{ open }">
+                                <t-image :src="'/upload/' + item.OutputFile" @click="open">
+                                    <template #overlayContent>
+                                        <t-tag class="image-tag" theme="warning" variant="light"
+                                            @click="updateArtwork($event.e, item)">
+                                            <t-icon :name="item.Status == 'private' ? 'browse-off' : 'browse'" /> 编辑
+                                        </t-tag>
+                                    </template>
+                                </t-image>
+                            </template>
+                        </t-image-viewer>
+                    </template>
+                    <template #footer>
+                        <t-comment :author="item.Subject" :content="item.Prompt" />
+                    </template>
+                </t-card>
+            </VueFlexWaterfall>
+
+            <ArtworkUpdate ref="updateModal" @submit="getArtworkList" />
+        </t-space>
     </t-space>
 </template>
 
@@ -78,6 +98,12 @@ export default class ArtworkList extends Vue {
     :deep(.t-image__wrapper) {
         min-height: 100px;
         cursor: pointer;
+    }
+
+    .image-tag {
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
     }
 }
 </style>
