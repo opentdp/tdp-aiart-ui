@@ -30,10 +30,9 @@ export default class LayoutBottle extends Vue {
             <t-header>
                 <t-head-menu>
                     <template #logo>
-                        <div class="logo">
-                            <img :src="layout.SiteLogo">
-                            <b>{{ layout.SiteName }}</b>
-                        </div>
+                        <a class="logo" href="/" :title="layout.SiteName">
+                            <img :src="layout.Collapse ? layout.SiteIcon : layout.SiteLogo">
+                        </a>
                     </template>
                     <template #operations>
                         <t-button theme="default" variant="text" @click="themeModeChange">
@@ -75,16 +74,11 @@ export default class LayoutBottle extends Vue {
     display: flex;
     align-items: end;
     justify-content: center;
+    padding-left: 16px;
     width: 100%;
 
     img {
         height: 40px;
-        padding: 0 5px 0 16px;
-    }
-
-    b {
-        font-size: 18px;
-        padding-bottom: 3px;
     }
 }
 </style>

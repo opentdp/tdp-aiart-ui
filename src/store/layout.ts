@@ -9,18 +9,18 @@ export default defineStore("layout", {
         Collapse: false,
         // 主题模式
         ThemeMode: "",
-        // 后端本号
+        // 后端版本
         Version: "",
         // 功能开关
         Registrable: false,
         // 前端配置
         SiteName: vars.SiteName,
-        SiteLogo: "/assets/img/logo.svg",
-        SiteIcon: "/assets/img/icon.svg",
+        SiteLogo: vars.SiteLogo,
+        SiteIcon: vars.SiteIcon,
+        Copylink: vars.Copylink,
+        Copytext: vars.Copytext,
+        IcpCode: vars.IcpCode,
         Analytics: vars.Analytics,
-        Copylink: "https://www.opentdp.org",
-        Copytext: "Powered by Open TDP",
-        IcpCode: "",
     }),
     actions: {
         // 侧边栏折叠
@@ -33,31 +33,35 @@ export default defineStore("layout", {
             this.applyConfig()
         },
         // 获取前端配置
-        async fetchConfig() {
-            const res = await NaApi.config.ui()
-            Object.keys(res).forEach(k => {
-                const v = res[k].trim()
-                v && Object.assign(this, { [k]: v })
+        fetchConfig() {
+            NaApi.config.ui().then(res => {
+                Object.keys(res).forEach(k => {
+                    const v = res[k].trim()
+                    v && Object.assign(this, { [k]: v })
+                })
+                // 修正参数类型
+                this.Registrable = res.Registrable == "true"
+                // 安装统计代码
+                if (this.Analytics) {
+                    this.runScript(this.Analytics)
+                }
+                // 应用前端配置
+                this.applyConfig()
             })
-            this.Registrable = res.Registrable == "true"
-            this.applyConfig()
-        },
-        // 执行行内脚本
-        runScript(code: string) {
-            const script = document.createElement('script')
-            script.innerHTML = code // 行内脚本
-            document.body.appendChild(script)
-            document.body.removeChild(script)
         },
         // 应用布局设置
         applyConfig() {
-            if (this.Analytics) {
-                this.runScript(this.Analytics)
-            }
             if (document.body.clientWidth < 1000) {
                 this.setCollapse(true)
             }
             document.documentElement.setAttribute('theme-mode', this.ThemeMode)
+        },
+        // 执行行内脚本
+        runScript(code: string) {
+            const script = document.createElement('script')
+            script.innerHTML = code // 写入行内脚本
+            document.body.appendChild(script)
+            document.body.removeChild(script)
         },
     },
     persist: {
