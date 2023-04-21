@@ -1,4 +1,4 @@
-name: TDP aiart Builder
+name: TDP Aiart UI Builder
 
 on:
   push:

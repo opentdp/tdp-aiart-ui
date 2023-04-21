@@ -1,5 +1,7 @@
 # TDP Aiart UI
 
+[![TDP Aiart UI Builder](https://github.com/open-tdp/tdp-aiart-ui/actions/workflows/release.yml/badge.svg)](https://github.com/open-tdp/tdp-aiart-ui/actions/workflows/release.yml)
+
 [TDP Aiart](https://github.com/open-tdp/tdp-aiart) 的前端组件
 
 ## 开发说明
