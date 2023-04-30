@@ -43,7 +43,7 @@ export default class ArtworkCreate extends Vue {
         const res = await NaApi.chatbot.message(this.chating).finally(() => {
             this.loading = false
         })
-        this.chating.unshift(res)
+        this.chating.push(res.Item)
     }
 
     // 清空聊天
@@ -65,7 +65,7 @@ export default class ArtworkCreate extends Vue {
             </t-breadcrumb-item>
         </t-breadcrumb>
 
-        <t-card title="聊天" hover-shadow header-bordered>
+        <t-card hover-shadow header-bordered>
             <t-list>
                 <template v-for="item, k of chating" :key="k">
                     <t-list-item :class="item.role">
@@ -73,6 +73,9 @@ export default class ArtworkCreate extends Vue {
                             :description="item.content" />
                     </t-list-item>
                 </template>
+                <t-list-item v-if="loading" class="assistant">
+                    <t-list-item-meta :image="avatars.bot" description="正在生成 ..." />
+                </t-list-item>
             </t-list>
             <t-form ref="formRef" :data="formModel" :rules="formRules" label-width="90px" @submit="formSubmit">
                 <t-textarea v-model="formModel.content" :autosize="{ minRows: 3, maxRows: 15 }" :maxlength="512" />
