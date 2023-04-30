@@ -87,6 +87,11 @@ const menuItems: MenuItem[] = [
         title: "图生图",
     },
     {
+        icon: "precise-monitor",
+        index: "/chatbot/list",
+        title: "智能对话",
+    },
+    {
         icon: "usergroup",
         index: "/user/list",
         title: "用户管理",
