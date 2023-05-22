@@ -12,7 +12,7 @@ export default class ArtworkCreate extends Vue {
     public loading = false
 
     public avatars = {
-        bot: "assets/img/icon.svg",
+        bot: "assets/img/avatar2.jpg",
         user: "assets/img/avatar.jpg",
     }
 
