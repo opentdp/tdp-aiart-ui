@@ -1,7 +1,7 @@
 <script lang="ts">
 import { Ref, Component, Vue } from "vue-facing-decorator"
 
-import { FormInstanceFunctions, FormRules, SubmitContext, Data as TData } from "tdesign-vue-next"
+import { FormInstanceFunctions, SubmitContext, Data as TData } from "tdesign-vue-next"
 
 import Api, { NaApi } from "@/api"
 import { ChatbotMessageOrig, ChatbotEngine } from "@/api/native/chatbot"
@@ -29,7 +29,7 @@ export default class ArtworkCreate extends Vue {
         Content: "",
     }
 
-    async formSubmit(ctx: SubmitContext<TData>) {
+    public formSubmit(ctx: SubmitContext<TData>) {
         if (ctx.validateResult !== true) {
             Api.msg.err("请检查表单")
             return false
@@ -39,16 +39,26 @@ export default class ArtworkCreate extends Vue {
             Role: this.formModel.Role,
             Content: this.formModel.Content
         })
+        this.formModel.Content = "" // 清空输入框
+        const idx = this.chatRecord.push({
+            Role: "assistant",
+            Content: "正在思考..."
+        }) - 1
         const query = {
             Model: this.chatModel,
             Messages: this.chatRecord
         }
-        this.formModel.Content = "" // 清空输入框
-        const res = await NaApi.chatbot.create(query).finally(() => {
+        const fn = (res: ChatbotMessageOrig) => {
+            const r = this.chatRecord[idx]
+            if (r.Content == "正在思考...") {
+                r.Content = res.Content
+            } else {
+                r.Content += res.Content
+            }
+        }
+        NaApi.chatbot.stream(query, fn).catch(() => this.chatClear(idx)).finally(() => {
             this.loading = false
         })
-        // 更新聊天记录
-        this.chatRecord.push(...res.Messages)
     }
 
     // 清空聊天
@@ -87,9 +97,6 @@ export default class ArtworkCreate extends Vue {
                     </template>
                 </t-list-item>
             </template>
-            <t-list-item v-if="loading" class="assistant">
-                <t-list-item-meta :image="avatars.bot" description="正在生成 ..." />
-            </t-list-item>
         </t-list>
 
         <t-card hover-shadow header-bordered>

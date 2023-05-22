@@ -4,6 +4,16 @@ export class ChatbotModel extends HttpClient {
     public create(rq: ChatbotCreateParam): Promise<ChatbotCreateResult> {
         return this.post("/chatbot/create", rq)
     }
+    public stream(rq: ChatbotCreateParam, fn: (d: ChatbotMessageOrig) => void): Promise<unknown> {
+        const callback = (s: string) => {
+            const data = s.match(/^event:(\w+)\ndata:(.+)/)
+            if (data) {
+                const json = JSON.parse(data[2])
+                fn(json && json.Message)
+            }
+        }
+        return this.request({ method: "POST", url: "/chatbot/stream", query: rq }, callback)
+    }
 }
 
 export const ChatbotEngine = [
@@ -23,5 +33,5 @@ export interface ChatbotCreateParam {
 }
 
 export interface ChatbotCreateResult {
-    Messages: ChatbotMessageOrig[]
+    Message: ChatbotMessageOrig[]
 }

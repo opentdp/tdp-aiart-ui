@@ -34,7 +34,7 @@ export class HttpClient {
         return res
     }
 
-    protected async request(req: HttpRequest) {
+    protected async request(req: HttpRequest, fn?: Callback) {
         // 构造请求头
         const headers: HeadersInit = {
             Accept: "application/json",
@@ -50,13 +50,17 @@ export class HttpClient {
             method: req.method,
             headers,
         }
-        // 发起请求并返回结构数据
-        return this.newFetch(req.url, request)
+        // 返回结构数据
+        if (typeof fn != 'function') {
+            return this.newFetch(req.url, request)
+        }
+        // 发起流式请求
+        return this.newStream(req.url, request, fn)
     }
 
     protected async newFetch(url: string, req: RequestInit) {
-        const body = await fetch(this.api + url, req)
-        const data = await body.json()
+        const resp = await fetch(this.api + url, req)
+        const data = await resp.json()
         // 捕获错误信息
         if (data.Error) {
             const err = errMessage(data.Error)
@@ -74,6 +78,25 @@ export class HttpClient {
             return data.Payload
         }
         return data
+    }
+
+    protected async newStream(url: string, req: RequestInit, fn: Callback) {
+        const resp = await fetch(this.api + url, req)
+        if (!resp.body) {
+            throw new Error("HTTP Error: " + resp.status)
+        }
+        //获取UTF8的解码
+        const reader = resp.body.getReader()
+        const encode = new TextDecoder("utf-8")
+        // eslint-disable-next-line no-constant-condition
+        while (true) {
+            const { done, value } = await reader.read()
+            if (!done) {
+                fn(encode.decode(value))
+                continue
+            }
+            break
+        }
     }
 
     protected buildQuery(obj: unknown, key?: string) {
@@ -112,3 +135,5 @@ export interface HttpRequest {
 export interface HttpMessage {
     Message: string
 }
+
+export type Callback = (d: string) => void
