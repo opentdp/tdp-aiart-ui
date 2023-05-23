@@ -85,14 +85,14 @@ export class HttpClient {
         if (!resp.body) {
             throw new Error("HTTP Error: " + resp.status)
         }
-        //获取UTF8的解码
+        // 获取UTF8的解码
         const reader = resp.body.getReader()
         const encode = new TextDecoder("utf-8")
         // eslint-disable-next-line no-constant-condition
         while (true) {
             const { done, value } = await reader.read()
-            if (!done) {
-                fn(encode.decode(value))
+            if (!done && value) {
+                encode.decode(value).split("\n\n").forEach(fn)
                 continue
             }
             break
