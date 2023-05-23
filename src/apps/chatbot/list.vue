@@ -6,9 +6,13 @@ import { FormInstanceFunctions, SubmitContext, Data as TData } from "tdesign-vue
 import Api, { NaApi } from "@/api"
 import { ChatbotMessageOrig, ChatbotEngine } from "@/api/native/chatbot"
 
+import Prompts from "./prompt.json"
+
 @Component
 export default class ArtworkCreate extends Vue {
     public ChatbotEngine = ChatbotEngine
+    public Prompts = Prompts
+
     public loading = false
 
     public avatars = {
@@ -19,6 +23,7 @@ export default class ArtworkCreate extends Vue {
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
+    public chatRole!: number
     public chatRecord: ChatbotMessageOrig[] = []
 
     // 创建表单
@@ -31,25 +36,20 @@ export default class ArtworkCreate extends Vue {
         Content: "",
     }
 
-    public formSubmit(ctx: SubmitContext<TData>) {
-        if (ctx.validateResult !== true) {
-            Api.msg.err("请检查表单")
-            return false
-        }
+    public formSubmit() {
         this.loading = true
         this.chatRecord.push({
             Role: this.formModel.Role,
             Content: this.formModel.Content
         })
-        this.formModel.Content = "" // 清空输入框
-        const idx = this.chatRecord.push({
-            Role: "assistant",
-            Content: "正在思考..."
-        }) - 1
+        // 当前索引
+        let idx = 0
+        // 聊天记录
         const query = {
             Model: this.chatModel,
             Messages: this.chatRecord
         }
+        // 流响应模式
         if (this.useStream) {
             const fn = (res: ChatbotMessageOrig) => {
                 const r = this.chatRecord[idx]
@@ -64,7 +64,9 @@ export default class ArtworkCreate extends Vue {
                 .finally(() => {
                     this.loading = false
                 })
-        } else {
+        }
+        // 一次性模式 
+        else {
             NaApi.chatbot.create(query)
                 .then(res => {
                     this.chatRecord[idx].Content = res.Message.Content
@@ -74,6 +76,21 @@ export default class ArtworkCreate extends Vue {
                     this.loading = false
                 })
         }
+        // 延迟模拟数据
+        idx = this.chatRecord.push({
+            Role: "assistant",
+            Content: "正在思考..."
+        }) - 1
+        // 清空输入
+        this.formModel.Content = ""
+    }
+
+    // 设置角色
+
+    public onRolechange() {
+        const role = this.Prompts[this.chatRole]
+        this.formModel.Content = role.prompt
+        this.formSubmit()
     }
 
     // 清空聊天
@@ -121,6 +138,11 @@ export default class ArtworkCreate extends Vue {
                         <t-radio :value="true" label="开启" />
                         <t-radio :value="false" label="关闭" />
                     </t-radio-group>
+                </t-form-item>
+                <t-form-item label="角色扮演">
+                    <t-select v-model="chatRole" placeholder="为Ai设定一个角色" @change="onRolechange">
+                        <t-option v-for="v, k in Prompts" :key="k" :value="k" :label="v.act" />
+                    </t-select>
                 </t-form-item>
                 <t-form-item label="语言模型">
                     <t-select v-model="chatModel">
