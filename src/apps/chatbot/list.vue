@@ -118,8 +118,8 @@ export default class ArtworkCreate extends Vue {
             <t-form ref="formRef" :data="formModel" label-width="80px" @submit="formSubmit">
                 <t-form-item label="流式响应">
                     <t-radio-group v-model="useStream">
-                        <t-radio-button :value="true" label="开启" />
-                        <t-radio-button :value="false" label="关闭" />
+                        <t-radio :value="true" label="开启" />
+                        <t-radio :value="false" label="关闭" />
                     </t-radio-group>
                 </t-form-item>
                 <t-form-item label="语言模型">
