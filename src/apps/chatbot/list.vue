@@ -16,7 +16,9 @@ export default class ArtworkCreate extends Vue {
         user: "assets/img/avatar.jpg",
     }
 
+    public useStream = true
     public chatModel = "gpt-3.5-turbo"
+
     public chatRecord: ChatbotMessageOrig[] = []
 
     // 创建表单
@@ -48,17 +50,30 @@ export default class ArtworkCreate extends Vue {
             Model: this.chatModel,
             Messages: this.chatRecord
         }
-        const fn = (res: ChatbotMessageOrig) => {
-            const r = this.chatRecord[idx]
-            if (r.Content == "正在思考...") {
-                r.Content = res.Content
-            } else {
-                r.Content += res.Content
+        if (this.useStream) {
+            const fn = (res: ChatbotMessageOrig) => {
+                const r = this.chatRecord[idx]
+                if (r.Content == "正在思考...") {
+                    r.Content = res.Content
+                } else {
+                    r.Content += res.Content
+                }
             }
+            NaApi.chatbot.stream(query, fn)
+                .catch(() => this.chatClear(idx))
+                .finally(() => {
+                    this.loading = false
+                })
+        } else {
+            NaApi.chatbot.create(query)
+                .then(res => {
+                    this.chatRecord[idx].Content = res.Message.Content
+                })
+                .catch(() => this.chatClear(idx))
+                .finally(() => {
+                    this.loading = false
+                })
         }
-        NaApi.chatbot.stream(query, fn).catch(() => this.chatClear(idx)).finally(() => {
-            this.loading = false
-        })
     }
 
     // 清空聊天
@@ -101,6 +116,12 @@ export default class ArtworkCreate extends Vue {
 
         <t-card hover-shadow header-bordered>
             <t-form ref="formRef" :data="formModel" label-width="80px" @submit="formSubmit">
+                <t-form-item label="流式响应">
+                    <t-radio-group v-model="useStream">
+                        <t-radio-button :value="true" label="开启" />
+                        <t-radio-button :value="false" label="关闭" />
+                    </t-radio-group>
+                </t-form-item>
                 <t-form-item label="语言模型">
                     <t-select v-model="chatModel">
                         <t-option v-for="v, k in ChatbotEngine" :key="k" :value="v" :label="v" />
