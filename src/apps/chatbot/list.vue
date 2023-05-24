@@ -23,7 +23,7 @@ export default class ArtworkCreate extends Vue {
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
-    public chatRole!: number
+    public chatRole!: number | null
     public chatRecord: ChatbotMessageOrig[] = []
 
     // 创建表单
@@ -88,7 +88,7 @@ export default class ArtworkCreate extends Vue {
     // 设置角色
 
     public onRolechange() {
-        const role = this.Prompts[this.chatRole]
+        const role = this.Prompts[this.chatRole || 0]
         this.formModel.Content = role.prompt
     }
 
@@ -99,6 +99,7 @@ export default class ArtworkCreate extends Vue {
             this.chatRecord.splice(id, 1)
         } else {
             this.chatRecord = []
+            this.chatRole = null
             this.formRef.reset()
         }
     }
@@ -121,7 +122,7 @@ export default class ArtworkCreate extends Vue {
                 <t-list-item :class="item.Role">
                     <t-list-item-meta :image="item.Role == 'user' ? avatars.user : avatars.bot">
                         <template #description>
-                            <div v-markdown="item.Content" />
+                            <div v-markdown="item.Content" class="message" />
                         </template>
                     </t-list-item-meta>
                     <template #action>
@@ -152,7 +153,8 @@ export default class ArtworkCreate extends Vue {
                     </t-select>
                 </t-form-item>
                 <t-form-item label="输入内容">
-                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 3, maxRows: 15 }" :maxlength="512" />
+                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 3, maxRows: 30 }"
+                        :maxlength="32 * 1024" />
                 </t-form-item>
                 <t-form-item>
                     <t-space>
@@ -168,3 +170,9 @@ export default class ArtworkCreate extends Vue {
         </t-card>
     </t-space>
 </template>
+
+<style lang="scss" scoped>
+.message {
+    word-wrap: break-word;
+}
+</style>
