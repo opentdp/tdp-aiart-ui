@@ -120,8 +120,11 @@ export default class ArtworkCreate extends Vue {
         <t-list v-if="chatRecord.length > 0" stripe>
             <template v-for="item, k of chatRecord" :key="k">
                 <t-list-item :class="item.Role">
-                    <t-list-item-meta :image="item.Role == 'user' ? avatars.user : avatars.bot"
-                        :description="item.Content" />
+                    <t-list-item-meta :image="item.Role == 'user' ? avatars.user : avatars.bot">
+                        <template #description>
+                            <div v-markdown="item.Content" />
+                        </template>
+                    </t-list-item-meta>
                     <template #action>
                         <t-button shape="circle" variant="text" @click="chatClear(k)">
                             <t-icon name="rollback" />
