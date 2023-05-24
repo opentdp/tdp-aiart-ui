@@ -40,7 +40,6 @@ const markdown = new MarkdownIt({
 const plugin: Plugin = {
     install: (app: App) => {
         app.directive('markdown', (el, binding) => {
-            console.log(binding.value)
             el.innerHTML = markdown.render(binding.value)
         })
     },
