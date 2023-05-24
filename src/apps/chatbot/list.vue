@@ -90,7 +90,6 @@ export default class ArtworkCreate extends Vue {
     public onRolechange() {
         const role = this.Prompts[this.chatRole]
         this.formModel.Content = role.prompt
-        this.formSubmit()
     }
 
     // 清空聊天
@@ -142,14 +141,14 @@ export default class ArtworkCreate extends Vue {
                         <t-radio :value="false" label="关闭" />
                     </t-radio-group>
                 </t-form-item>
-                <t-form-item label="角色扮演">
-                    <t-select v-model="chatRole" placeholder="为Ai设定一个角色" @change="onRolechange">
-                        <t-option v-for="v, k in Prompts" :key="k" :value="k" :label="v.act" />
-                    </t-select>
-                </t-form-item>
                 <t-form-item label="语言模型">
                     <t-select v-model="chatModel">
                         <t-option v-for="v, k in ChatbotEngine" :key="k" :value="v" :label="v" />
+                    </t-select>
+                </t-form-item>
+                <t-form-item label="角色扮演">
+                    <t-select v-model="chatRole" placeholder="为Ai设定一个角色" @change="onRolechange">
+                        <t-option v-for="v, k in Prompts" :key="k" :value="k" :label="v.act" />
                     </t-select>
                 </t-form-item>
                 <t-form-item label="输入内容">
@@ -169,10 +168,3 @@ export default class ArtworkCreate extends Vue {
         </t-card>
     </t-space>
 </template>
-
-<style lang="scss" scoped>
-.image-output {
-    width: 100%;
-    max-width: 480px;
-}
-</style>

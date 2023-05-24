@@ -61,6 +61,9 @@ export class HttpClient {
     protected async newFetch(url: string, req: RequestInit) {
         const resp = await fetch(this.api + url, req)
         const data = await resp.json()
+        if (resp.status != 200 && !data) {
+            throw new Error("HTTP Error: " + resp.status)
+        }
         // 捕获错误信息
         if (data.Error) {
             const err = errMessage(data.Error)
@@ -82,7 +85,16 @@ export class HttpClient {
 
     protected async newStream(url: string, req: RequestInit, fn: Callback) {
         const resp = await fetch(this.api + url, req)
-        if (!resp.body) {
+        if (resp.status != 200 || !resp.body) {
+            const data = await resp.json()
+            // 捕获错误信息
+            if (data && data.Error) {
+                const err = errMessage(data.Error)
+                if (data.Error.Code == 401) {
+                    session.$reset(), location.reload()
+                }
+                throw new Error(err)
+            }
             throw new Error("HTTP Error: " + resp.status)
         }
         // 获取UTF8的解码
