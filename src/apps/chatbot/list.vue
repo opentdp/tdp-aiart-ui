@@ -16,8 +16,8 @@ export default class ArtworkCreate extends Vue {
     public loading = false
 
     public avatars = {
-        bot: "assets/img/avatar2.jpg",
-        user: "assets/img/avatar.jpg",
+        bot: "assets/image/avatar2.jpg",
+        user: "assets/image/avatar.jpg",
     }
 
     public useStream = true

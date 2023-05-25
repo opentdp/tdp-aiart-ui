@@ -69,7 +69,7 @@ export default class ArtworkCreate2 extends Vue {
         reader.onload = () => this.imageOrigin = String(reader.result)
         const data: RequestMethodResponse = {
             status: 'success', response: {
-                url: 'assets/img/avatar.jpg'
+                url: 'assets/image/avatar.jpg'
             }
         }
         return Promise.resolve(data)
