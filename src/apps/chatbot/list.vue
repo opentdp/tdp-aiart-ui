@@ -20,7 +20,7 @@ export default class ArtworkCreate extends Vue {
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
-    public chatRole!: number | null
+    public chatRole!: number
     public chatRecord: ChatbotMessageOrig[] = []
 
     public botAvatar = "assets/image/avatar2.jpg"
@@ -97,8 +97,7 @@ export default class ArtworkCreate extends Vue {
         if (id >= 0) {
             this.chatRecord.splice(id, 1)
         } else {
-            this.chatRecord = []
-            this.chatRole = null
+            Object.assign(this, { chatRole: null, chatRecord: [] })
             this.formRef.reset()
         }
     }

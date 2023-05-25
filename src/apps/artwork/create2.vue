@@ -85,7 +85,7 @@ export default class ArtworkCreate2 extends Vue {
     // 图片裁剪
 
     @Ref
-    public cropper: VueCropper
+    public cropper!: typeof VueCropper
 
     public fixedNumber = [4, 3]
     public limitMinSize = [200, 150]
