@@ -94,8 +94,9 @@ const menuItems: MenuItem[] = [
                         </t-menu-item>
                     </template>
                     <template #operations>
-                        <t-button theme="default" variant="text" @click="themeModeChange">
-                            <t-icon name="chart-bubble" size="20" />
+                        <t-button shape="circle" variant="text" @click="themeModeChange">
+                            <img v-if="layout.ThemeMode == 'dark'" src="assets/image/sun.svg" width="20">
+                            <img v-else src="assets/image/moon.svg" width="20">
                         </t-button>
                         <t-button v-if="session.UserId" v-route="'/dashboard'" theme="default" variant="text">
                             控制台
