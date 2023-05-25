@@ -1,30 +1,29 @@
 <script lang="ts">
 import { Ref, Component, Vue } from "vue-facing-decorator"
 
-import { FormInstanceFunctions, SubmitContext, Data as TData } from "tdesign-vue-next"
+import { FormInstanceFunctions } from "tdesign-vue-next"
 
-import Api, { NaApi } from "@/api"
+import { NaApi } from "@/api"
 import { ChatbotMessageOrig, ChatbotEngine } from "@/api/native/chatbot"
 
 import Prompts from "./prompt.json"
+import sessionStore from "@/store/session"
 
 @Component
 export default class ArtworkCreate extends Vue {
+    public session = sessionStore()
     public ChatbotEngine = ChatbotEngine
     public Prompts = Prompts
 
     public loading = false
-
-    public avatars = {
-        bot: "assets/image/avatar2.jpg",
-        user: "assets/image/avatar.jpg",
-    }
 
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
     public chatRole!: number | null
     public chatRecord: ChatbotMessageOrig[] = []
+
+    public botAvatar = "assets/image/avatar2.jpg"
 
     // 创建表单
 
@@ -120,7 +119,7 @@ export default class ArtworkCreate extends Vue {
         <t-list v-if="chatRecord.length > 0" stripe>
             <template v-for="item, k of chatRecord" :key="k">
                 <t-list-item :class="item.Role">
-                    <t-list-item-meta :image="item.Role == 'user' ? avatars.user : avatars.bot">
+                    <t-list-item-meta :image="item.Role == 'user' ? session.Avatar : botAvatar">
                         <template #description>
                             <div v-markdown="item.Content" class="message" />
                         </template>
