@@ -49,7 +49,7 @@ export default class ArtworkCreate extends Vue {
         const res = await NaApi.artwork.create(this.formModel).finally(() => {
             this.loading = false
         })
-        this.output.unshift("/upload/" + res.OutputFile)
+        this.output.unshift(res.OutputFile)
     }
 
     // 清空图片

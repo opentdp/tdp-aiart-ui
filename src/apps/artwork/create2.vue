@@ -56,7 +56,7 @@ export default class ArtworkCreate2 extends Vue {
         const res = await NaApi.artwork.create(query).finally(() => {
             this.loading = false
         })
-        this.output.unshift("/upload/" + res.OutputFile)
+        this.output.unshift(res.OutputFile)
     }
 
     // 图片选择
