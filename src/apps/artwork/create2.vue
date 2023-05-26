@@ -187,9 +187,15 @@ export default class ArtworkCreate2 extends Vue {
                 <t-form-item>
                     <t-space>
                         <t-button theme="primary" type="submit" :loading="loading">
+                            <template #icon>
+                                <t-icon name="relativity" />
+                            </template>
                             {{ output.length > 1 ? "重新生成" : "生成" }}
                         </t-button>
-                        <t-button theme="warning" @click="imageClear">
+                        <t-button theme="danger" @click="imageClear">
+                            <template #icon>
+                                <t-icon name="clear" />
+                            </template>
                             清除图片
                         </t-button>
                     </t-space>
