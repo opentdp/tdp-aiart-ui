@@ -85,13 +85,13 @@ export const routes: RouteRecordRaw[] = [
                 component: () => import("./artwork/create2.vue"),
             },
             {
-                path: "/chatbot/list",
-                name: "chatbot-list",
+                path: "/chatbot/create",
+                name: "chatbot-create",
                 meta: {
                     title: "智能对话",
                     login: true,
                 },
-                component: () => import("./chatbot/list.vue"),
+                component: () => import("./chatbot/create.vue"),
             },
             //////
             {

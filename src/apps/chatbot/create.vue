@@ -10,7 +10,7 @@ import Prompts from "./prompt.json"
 import sessionStore from "@/store/session"
 
 @Component
-export default class ArtworkCreate extends Vue {
+export default class ChatbotCreate extends Vue {
     public session = sessionStore()
     public ChatbotEngine = ChatbotEngine
     public Prompts = Prompts
@@ -59,7 +59,10 @@ export default class ArtworkCreate extends Vue {
                 }
             }
             NaApi.chatbot.stream(query, fn)
-                .catch(() => this.chatClear(idx))
+                .catch(e => {
+                    this.chatClear(idx)
+                    console.log("err1", e)
+                })
                 .finally(() => {
                     this.loading = false
                 })
@@ -70,7 +73,10 @@ export default class ArtworkCreate extends Vue {
                 .then(res => {
                     this.chatRecord[idx].Content = res.Message.Content
                 })
-                .catch(() => this.chatClear(idx))
+                .catch(e => {
+                    this.chatClear(idx)
+                    console.log("err2", e)
+                })
                 .finally(() => {
                     this.loading = false
                 })

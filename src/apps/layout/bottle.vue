@@ -75,7 +75,7 @@ const menuItems: MenuItem[] = [
     },
     {
         icon: "precise-monitor",
-        index: "/chatbot/list",
+        index: "/chatbot/create",
         title: "智能对话",
     },
 ]
