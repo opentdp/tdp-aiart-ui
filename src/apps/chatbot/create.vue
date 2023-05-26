@@ -52,13 +52,12 @@ export default class ChatbotCreate extends Vue {
             Content: this.formModel.Content
         })
         this.formModel.Content = ""
-        // 当前索引
-        let idx = 0
-        // 聊天记录
+        // 构造参数
         const query = {
             Model: this.chatModel,
             Messages: this.chatRecord
         }
+        const idx = this.chatRecord.length
         // 流响应模式
         if (this.useStream) {
             const fn = (res: ChatbotMessageOrig) => {
@@ -85,10 +84,10 @@ export default class ChatbotCreate extends Vue {
             )
         }
         // 延迟模拟数据
-        idx = this.chatRecord.push({
+        this.chatRecord.push({
             Role: "assistant",
             Content: "正在思考..."
-        }) - 1
+        })
     }
 
     // 设置角色
@@ -100,15 +99,20 @@ export default class ChatbotCreate extends Vue {
         this.promptVisible = false
     }
 
-    // 清空聊天
+    // 清理聊天
 
     public chatClear(id = -1) {
-        if (id >= 0) {
-            this.chatRecord.splice(id, 1)
-        } else {
+        if (id < 0) {
             this.chatRecord = []
             this.formRef.reset()
+        } else {
+            this.chatRecord.splice(id, 1)
         }
+    }
+
+    public chatRollback() {
+        const l = this.chatRecord.pop()
+        this.formModel.Content = l ? l.Content : ""
     }
 }
 </script>
@@ -132,7 +136,12 @@ export default class ChatbotCreate extends Vue {
                             <div v-markdown="item.Content" class="message" />
                         </template>
                     </t-list-item-meta>
-                    <template #action>
+                    <template v-if="item.Role == 'user' && chatRecord.length == k + 1" #action>
+                        <t-button shape="circle" variant="text" @click="chatRollback()">
+                            <t-icon name="rollback" />
+                        </t-button>
+                    </template>
+                    <template v-else #action>
                         <t-button shape="circle" variant="text" @click="chatClear(k)">
                             <t-icon name="clear" />
                         </t-button>
