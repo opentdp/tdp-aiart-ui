@@ -11,9 +11,8 @@ import sessionStore from "@/store/session"
 
 @Component
 export default class ChatbotCreate extends Vue {
-    public session = sessionStore()
     public ChatbotEngine = ChatbotEngine
-    public Prompts = Prompts
+    public session = sessionStore()
 
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
@@ -21,6 +20,22 @@ export default class ChatbotCreate extends Vue {
     public chatRecord: ChatbotMessageOrig[] = []
 
     public botAvatar = "assets/image/avatar2.jpg"
+
+    // 提示词
+
+    public promptList = Prompts.prompts
+    public promptTags = Prompts.tags.map(v => v.name)
+
+    public promptFilter(s: string) {
+        if (s == "") {
+            this.promptList = Prompts.prompts
+            return
+        }
+        this.promptList = Prompts.prompts.filter(v => {
+            const txt = v.title + v.description + v.prompt + v.tags.join("")
+            return txt.includes(s)
+        })
+    }
 
     // 创建表单
 
@@ -80,8 +95,8 @@ export default class ChatbotCreate extends Vue {
 
     public promptVisible = false
 
-    public usePrompt(v: string) {
-        this.formModel.Content = v
+    public promptApply(s: string) {
+        this.formModel.Content = s
         this.promptVisible = false
     }
 
@@ -152,9 +167,9 @@ export default class ChatbotCreate extends Vue {
                         </t-button>
                         <t-button theme="warning" :disabled="chatRecord.length > 0" @click="promptVisible = true">
                             <template #icon>
-                                <t-icon name="chart-bubble" />
+                                <t-icon name="root-list" />
                             </template>
-                            情景模式
+                            提示词
                         </t-button>
                         <t-button theme="danger" :disabled="chatRecord.length == 0" @click="chatClear(-1)">
                             <template #icon>
@@ -167,12 +182,25 @@ export default class ChatbotCreate extends Vue {
             </t-form>
         </t-card>
 
-        <t-drawer v-model:visible="promptVisible" header="情景模式" :footer="false" :close-btn="true">
+        <t-drawer v-model:visible="promptVisible" :close-btn="true">
+            <template #header>
+                提示词 &nbsp;
+                <t-tag size="small">
+                    {{ promptList.length }}
+                </t-tag>
+            </template>
             <t-list class="select-list" stripe>
-                <t-list-item v-for="v, k in Prompts.prompts" :key="k" @click="usePrompt(v.prompt)">
+                <t-list-item v-for="v, k in promptList" :key="k" @click="promptApply(v.prompt)">
                     <t-list-item-meta :title="v.title" :description="v.description" />
                 </t-list-item>
             </t-list>
+            <template #footer>
+                <t-auto-complete :options="promptTags" @change="promptFilter">
+                    <template #suffixIcon>
+                        <t-icon name="filter" />
+                    </template>
+                </t-auto-complete>
+            </template>
         </t-drawer>
     </t-space>
 </template>
