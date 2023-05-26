@@ -26,15 +26,27 @@ export default class ChatbotCreate extends Vue {
     public promptList = Prompts.prompts
     public promptTags = Prompts.tags.map(v => v.name)
 
+    public promptSearch = ""
+    public promptVisible = false
+
+    public promptSwith() {
+        this.promptVisible = true
+    }
+
+    public promptApply(s: string) {
+        this.formModel.Content = s
+        this.promptVisible = false
+    }
+
     public promptFilter(s: string) {
-        if (s == "") {
+        if (s) {
+            this.promptList = Prompts.prompts.filter(v => {
+                const txt = v.title + v.description + v.prompt + v.tags.join("")
+                return txt.includes(s)
+            })
+        } else {
             this.promptList = Prompts.prompts
-            return
         }
-        this.promptList = Prompts.prompts.filter(v => {
-            const txt = v.title + v.description + v.prompt + v.tags.join("")
-            return txt.includes(s)
-        })
     }
 
     // 创建表单
@@ -88,15 +100,6 @@ export default class ChatbotCreate extends Vue {
             Role: "assistant",
             Content: "正在思考..."
         })
-    }
-
-    // 设置角色
-
-    public promptVisible = false
-
-    public promptApply(s: string) {
-        this.formModel.Content = s
-        this.promptVisible = false
     }
 
     // 清理聊天
@@ -174,7 +177,7 @@ export default class ChatbotCreate extends Vue {
                             </template>
                             发送
                         </t-button>
-                        <t-button theme="warning" :disabled="chatRecord.length > 0" @click="promptVisible = true">
+                        <t-button theme="warning" :disabled="chatRecord.length > 0" @click="promptSwith">
                             <template #icon>
                                 <t-icon name="root-list" />
                             </template>
@@ -204,7 +207,7 @@ export default class ChatbotCreate extends Vue {
                 </t-list-item>
             </t-list>
             <template #footer>
-                <t-auto-complete :options="promptTags" @change="promptFilter">
+                <t-auto-complete v-model="promptSearch" :options="promptTags" @change="promptFilter">
                     <template #suffixIcon>
                         <t-icon name="filter" />
                     </template>
