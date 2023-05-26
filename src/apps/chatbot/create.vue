@@ -157,8 +157,7 @@ export default class ChatbotCreate extends Vue {
                     </t-select>
                 </t-form-item>
                 <t-form-item label="输入内容">
-                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 3, maxRows: 30 }"
-                        :maxlength="32 * 1024" />
+                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 3, maxRows: 30 }" :maxlength="3072" />
                 </t-form-item>
                 <t-form-item>
                     <t-space>
