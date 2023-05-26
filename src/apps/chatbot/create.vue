@@ -20,7 +20,7 @@ export default class ChatbotCreate extends Vue {
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
-    public chatRole!: number
+    public chatRole = ""
     public chatRecord: ChatbotMessageOrig[] = []
 
     public botAvatar = "assets/image/avatar2.jpg"
@@ -93,8 +93,7 @@ export default class ChatbotCreate extends Vue {
     // 设置角色
 
     public onRolechange() {
-        const role = this.Prompts[this.chatRole || 0]
-        this.formModel.Content = role.prompt
+        this.formModel.Content = this.chatRole
     }
 
     // 清空聊天
@@ -151,9 +150,9 @@ export default class ChatbotCreate extends Vue {
                         <t-option v-for="v, k in ChatbotEngine" :key="k" :value="v" :label="v" />
                     </t-select>
                 </t-form-item>
-                <t-form-item label="角色扮演">
-                    <t-select v-model="chatRole" placeholder="为Ai设定一个角色" @change="onRolechange">
-                        <t-option v-for="v, k in Prompts" :key="k" :value="k" :label="v.act" />
+                <t-form-item label="情景模式">
+                    <t-select v-model="chatRole" @change="onRolechange">
+                        <t-option v-for="v, k in Prompts.prompts" :key="k" :value="v.prompt" :label="v.title" />
                     </t-select>
                 </t-form-item>
                 <t-form-item label="输入内容">
