@@ -15,12 +15,9 @@ export default class ChatbotCreate extends Vue {
     public ChatbotEngine = ChatbotEngine
     public Prompts = Prompts
 
-    public loading = false
-
     public useStream = true
     public chatModel = "gpt-3.5-turbo"
 
-    public chatRole = ""
     public chatRecord: ChatbotMessageOrig[] = []
 
     public botAvatar = "assets/image/avatar2.jpg"
@@ -30,17 +27,16 @@ export default class ChatbotCreate extends Vue {
     @Ref
     public formRef!: FormInstanceFunctions
 
-    public formModel: ChatbotMessageOrig = {
-        Role: "user",
+    public formModel = {
         Content: "",
     }
 
     public formSubmit() {
-        this.loading = true
         this.chatRecord.push({
-            Role: this.formModel.Role,
+            Role: "user",
             Content: this.formModel.Content
         })
+        this.formModel.Content = ""
         // 当前索引
         let idx = 0
         // 聊天记录
@@ -58,42 +54,35 @@ export default class ChatbotCreate extends Vue {
                     r.Content += res.Content
                 }
             }
-            NaApi.chatbot.stream(query, fn)
-                .catch(e => {
-                    this.chatClear(idx)
-                    console.log("err1", e)
-                })
-                .finally(() => {
-                    this.loading = false
-                })
+            NaApi.chatbot.stream(query, fn).catch(() => {
+                this.chatClear(idx)
+            })
         }
         // 一次性模式 
         else {
-            NaApi.chatbot.create(query)
-                .then(res => {
+            NaApi.chatbot.create(query).then(
+                res => {
                     this.chatRecord[idx].Content = res.Message.Content
-                })
-                .catch(e => {
+                },
+                () => {
                     this.chatClear(idx)
-                    console.log("err2", e)
-                })
-                .finally(() => {
-                    this.loading = false
-                })
+                }
+            )
         }
         // 延迟模拟数据
         idx = this.chatRecord.push({
             Role: "assistant",
             Content: "正在思考..."
         }) - 1
-        // 清空输入
-        this.formModel.Content = ""
     }
 
     // 设置角色
 
-    public onRolechange() {
-        this.formModel.Content = this.chatRole
+    public promptVisible = false
+
+    public usePrompt(v: string) {
+        this.formModel.Content = v
+        this.promptVisible = false
     }
 
     // 清空聊天
@@ -102,7 +91,7 @@ export default class ChatbotCreate extends Vue {
         if (id >= 0) {
             this.chatRecord.splice(id, 1)
         } else {
-            Object.assign(this, { chatRole: null, chatRecord: [] })
+            this.chatRecord = []
             this.formRef.reset()
         }
     }
@@ -130,7 +119,7 @@ export default class ChatbotCreate extends Vue {
                     </t-list-item-meta>
                     <template #action>
                         <t-button shape="circle" variant="text" @click="chatClear(k)">
-                            <t-icon name="rollback" />
+                            <t-icon name="clear" />
                         </t-button>
                     </template>
                 </t-list-item>
@@ -150,31 +139,50 @@ export default class ChatbotCreate extends Vue {
                         <t-option v-for="v, k in ChatbotEngine" :key="k" :value="v" :label="v" />
                     </t-select>
                 </t-form-item>
-                <t-form-item label="情景模式">
-                    <t-select v-model="chatRole" @change="onRolechange">
-                        <t-option v-for="v, k in Prompts.prompts" :key="k" :value="v.prompt" :label="v.title" />
-                    </t-select>
-                </t-form-item>
                 <t-form-item label="输入内容">
-                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 3, maxRows: 30 }" :maxlength="3072" />
+                    <t-textarea v-model="formModel.Content" :autosize="{ minRows: 5, maxRows: 30 }" :maxlength="3072" />
                 </t-form-item>
                 <t-form-item>
                     <t-space>
-                        <t-button theme="primary" type="submit" :disabled="formModel.Content == ''" :loading="loading">
+                        <t-button theme="primary" type="submit" :disabled="formModel.Content == ''">
+                            <template #icon>
+                                <t-icon name="relativity" />
+                            </template>
                             发送
                         </t-button>
-                        <t-button theme="warning" :disabled="chatRecord.length == 0" @click="chatClear(-1)">
+                        <t-button theme="warning" :disabled="chatRecord.length > 0" @click="promptVisible = true">
+                            <template #icon>
+                                <t-icon name="chart-bubble" />
+                            </template>
+                            情景模式
+                        </t-button>
+                        <t-button theme="danger" :disabled="chatRecord.length == 0" @click="chatClear(-1)">
+                            <template #icon>
+                                <t-icon name="clear" />
+                            </template>
                             重新开始
                         </t-button>
                     </t-space>
                 </t-form-item>
             </t-form>
         </t-card>
+
+        <t-drawer v-model:visible="promptVisible" header="情景模式" :footer="false" :close-btn="true">
+            <t-list class="select-list" stripe>
+                <t-list-item v-for="v, k in Prompts.prompts" :key="k" @click="usePrompt(v.prompt)">
+                    <t-list-item-meta :title="v.title" :description="v.description" />
+                </t-list-item>
+            </t-list>
+        </t-drawer>
     </t-space>
 </template>
 
 <style lang="scss" scoped>
 .message {
     word-wrap: break-word;
+}
+
+.select-list {
+    cursor: pointer;
 }
 </style>
