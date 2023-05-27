@@ -23,8 +23,8 @@ export default class ChatbotCreate extends Vue {
 
     // 提示词
 
-    public promptList = Prompts.prompts
-    public promptTags = Prompts.tags.map(v => v.name)
+    public promptList = Prompts
+    public promptTags = Prompts.map(v => v.title)
 
     public promptSearch = ""
     public promptVisible = false
@@ -33,19 +33,24 @@ export default class ChatbotCreate extends Vue {
         this.promptVisible = true
     }
 
-    public promptApply(s: string) {
-        this.formModel.Content = s
+    public promptApply(p: PromptItem) {
+        this.formModel.Content = p.desc_cn
         this.promptVisible = false
     }
 
     public promptFilter(s: string) {
         if (s) {
-            this.promptList = Prompts.prompts.filter(v => {
-                const txt = v.title + v.description + v.prompt + v.tags.join("")
-                return txt.includes(s)
+            this.promptList = Prompts.filter(v => {
+                const arr = [
+                    v.title, v.title_en,
+                    v.remark, v.remark_en,
+                    v.description, v.desc_cn,
+                    v.tags.join("")
+                ]
+                return arr.join(",").includes(s)
             })
         } else {
-            this.promptList = Prompts.prompts
+            this.promptList = Prompts
         }
     }
 
@@ -117,6 +122,19 @@ export default class ChatbotCreate extends Vue {
         const l = this.chatRecord.pop()
         this.formModel.Content = l ? l.Content : ""
     }
+}
+
+interface PromptItem {
+    title: string
+    description: string
+    desc_cn: string
+    remark: string
+    title_en: string
+    desc_en: string
+    remark_en: string
+    tags: string[]
+    id: number
+    weight: number
 }
 </script>
 
@@ -202,8 +220,8 @@ export default class ChatbotCreate extends Vue {
                 </t-tag>
             </template>
             <t-list class="select-list" stripe>
-                <t-list-item v-for="v, k in promptList" :key="k" @click="promptApply(v.prompt)">
-                    <t-list-item-meta :title="v.title" :description="v.description" />
+                <t-list-item v-for="v, k in promptList" :key="k" @click="promptApply(v)">
+                    <t-list-item-meta :title="v.title" :description="v.remark" />
                 </t-list-item>
             </t-list>
             <template #footer>
