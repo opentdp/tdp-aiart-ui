@@ -41,10 +41,8 @@ export default class LayoutBottle extends Vue {
 
     // 切换主题模式
 
-    public themeIcon = "sun"
     public themeModeChange() {
         const mode = this.layout.ThemeMode == "dark" ? "light" : "dark"
-        this.themeIcon = mode == "dark" ? "moon" : "sun"
         this.layout.setThemeMode(mode)
     }
 }
@@ -98,7 +96,7 @@ const menuItems: MenuItem[] = [
                     </template>
                     <template #operations>
                         <t-button shape="circle" variant="text" @click="themeModeChange">
-                            <img :src="'assets/image/' + themeIcon + '.svg'" width="20">
+                            <img :src="'assets/image/' + (layout.ThemeMode == 'dark' ? 'sun' : 'moon') + '.svg'" width="20">
                         </t-button>
                         <t-button v-if="session.UserId" v-route="'/dashboard'" theme="default" variant="text">
                             控制台
