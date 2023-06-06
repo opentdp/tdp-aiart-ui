@@ -119,15 +119,6 @@ export default class ArtworkCreate2 extends Vue {
 
 <template>
     <t-space fixed direction="vertical">
-        <t-breadcrumb>
-            <t-breadcrumb-item to="/dashboard">
-                首页
-            </t-breadcrumb-item>
-            <t-breadcrumb-item>
-                图生图
-            </t-breadcrumb-item>
-        </t-breadcrumb>
-
         <t-card title="绘图参数" hover-shadow header-bordered>
             <t-form ref="formRef" :data="formModel" :rules="formRules" label-width="90px" @submit="formSubmit">
                 <t-form-item name="Subject" label="作品标题">

@@ -74,22 +74,7 @@ const menuItems: MenuItem[] = [
     {
         icon: "layers",
         index: "/artwork/list",
-        title: "图库",
-    },
-    {
-        icon: "server",
-        index: "/artwork/create",
-        title: "文生图",
-    },
-    {
-        icon: "image",
-        index: "/artwork/create2",
-        title: "图生图",
-    },
-    {
-        icon: "precise-monitor",
-        index: "/chatbot/create",
-        title: "智能对话",
+        title: "图库管理",
     },
     {
         icon: "usergroup",

@@ -140,15 +140,6 @@ interface PromptItem {
 
 <template>
     <t-space fixed direction="vertical">
-        <t-breadcrumb>
-            <t-breadcrumb-item to="/">
-                首页
-            </t-breadcrumb-item>
-            <t-breadcrumb-item>
-                智能对话
-            </t-breadcrumb-item>
-        </t-breadcrumb>
-
         <t-list v-if="chatRecord.length > 0" stripe>
             <template v-for="item, k of chatRecord" :key="k">
                 <t-list-item :class="item.Role">

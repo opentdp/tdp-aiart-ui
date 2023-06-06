@@ -19,6 +19,33 @@ export const routes: RouteRecordRaw[] = [
                 },
                 component: HomeIndex,
             },
+            {
+                path: "/artwork/create",
+                name: "artwork-create",
+                meta: {
+                    title: "文生图",
+                    login: true,
+                },
+                component: () => import("./artwork/create.vue"),
+            },
+            {
+                path: "/artwork/create2",
+                name: "artwork-create2",
+                meta: {
+                    title: "图生图",
+                    login: true,
+                },
+                component: () => import("./artwork/create2.vue"),
+            },
+            {
+                path: "/chatbot/create",
+                name: "chatbot-create",
+                meta: {
+                    title: "智能对话",
+                    login: true,
+                },
+                component: () => import("./chatbot/create.vue"),
+            },
         ],
     },
     //////
@@ -61,37 +88,10 @@ export const routes: RouteRecordRaw[] = [
                 path: "/artwork/list",
                 name: "artwork-list",
                 meta: {
-                    title: "图库",
+                    title: "图库管理",
                     login: true,
                 },
                 component: () => import("./artwork/list.vue"),
-            },
-            {
-                path: "/artwork/create",
-                name: "artwork-create",
-                meta: {
-                    title: "文生图",
-                    login: true,
-                },
-                component: () => import("./artwork/create.vue"),
-            },
-            {
-                path: "/artwork/create2",
-                name: "artwork-create2",
-                meta: {
-                    title: "图生图",
-                    login: true,
-                },
-                component: () => import("./artwork/create2.vue"),
-            },
-            {
-                path: "/chatbot/create",
-                name: "chatbot-create",
-                meta: {
-                    title: "智能对话",
-                    login: true,
-                },
-                component: () => import("./chatbot/create.vue"),
             },
             //////
             {
