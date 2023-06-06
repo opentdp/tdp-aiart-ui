@@ -3,7 +3,7 @@ import { Component, Vue } from "vue-facing-decorator"
 
 import layoutStore from "@/store/layout"
 
-import Header from "./header.vue"
+import Header from "./header_console.vue"
 import Content from "./content.vue"
 import Footer from "./footer.vue"
 import Sidebar from "./sidebar.vue"
