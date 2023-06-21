@@ -15,11 +15,25 @@ export default class ChatbotCreate extends Vue {
     public session = sessionStore()
 
     public useStream = true
-    public chatModel = "gpt-3.5-turbo"
+    public chatModel = "gpt-3.5-turbo-16k"
 
     public chatRecord: ChatbotMessageOrig[] = []
 
     public botAvatar = "assets/image/avatar2.jpg"
+
+    public created() {
+        this.getChatModes()
+    }
+
+    // 模型表
+
+    public chatModels: string[] = []
+
+    public getChatModes() {
+        NaApi.chatbot.models().then(res => {
+            this.chatModels = res
+        })
+    }
 
     // 提示词
 
@@ -172,7 +186,7 @@ interface PromptItem {
                 </t-form-item>
                 <t-form-item label="语言模型">
                     <t-select v-model="chatModel">
-                        <t-option v-for="v, k in ChatbotEngine" :key="k" :value="v" :label="v" />
+                        <t-option v-for="v, k in chatModels" :key="k" :value="v" :label="v" />
                     </t-select>
                 </t-form-item>
                 <t-form-item label="输入内容">

@@ -5,6 +5,10 @@ export class ChatbotModel extends HttpClient {
         return this.post("/chatbot/create", rq)
     }
 
+    public models(): Promise<string[]> {
+        return this.post("/chatbot/models", {})
+    }
+
     public stream(rq: ChatbotCreateParam, fn: (d: ChatbotMessageOrig) => void): Promise<unknown> {
         const callback = (s: string) => {
             const data = s.match(/^event:(\w+)\ndata:(.+)/)
