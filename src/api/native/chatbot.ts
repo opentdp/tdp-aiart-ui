@@ -5,7 +5,7 @@ export class ChatbotModel extends HttpClient {
         return this.post("/chatbot/create", rq)
     }
 
-    public models(): Promise<string[]> {
+    public models(): Promise<ChatbotModel[]> {
         return this.post("/chatbot/models", {})
     }
 
@@ -21,11 +21,10 @@ export class ChatbotModel extends HttpClient {
     }
 }
 
-export const ChatbotEngine = [
-    "gpt-3.5-turbo",
-    "gpt-4-32k",
-    "gpt-4",
-]
+export interface ChatbotModel {
+    Name: string
+    CreatedAt: number
+}
 
 export interface ChatbotMessageOrig {
     Role: string

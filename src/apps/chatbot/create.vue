@@ -4,14 +4,13 @@ import { Ref, Component, Vue } from "vue-facing-decorator"
 import { FormInstanceFunctions } from "tdesign-vue-next"
 
 import { NaApi } from "@/api"
-import { ChatbotMessageOrig, ChatbotEngine } from "@/api/native/chatbot"
+import { ChatbotMessageOrig } from "@/api/native/chatbot"
 
 import Prompts from "./prompt.json"
 import sessionStore from "@/store/session"
 
 @Component
 export default class ChatbotCreate extends Vue {
-    public ChatbotEngine = ChatbotEngine
     public session = sessionStore()
 
     public useStream = true
@@ -31,7 +30,7 @@ export default class ChatbotCreate extends Vue {
 
     public getChatModes() {
         NaApi.chatbot.models().then(res => {
-            this.chatModels = res
+            this.chatModels = res.map(v => v.Name)
         })
     }
 
@@ -185,7 +184,7 @@ interface PromptItem {
                     </t-radio-group>
                 </t-form-item>
                 <t-form-item label="语言模型">
-                    <t-select v-model="chatModel">
+                    <t-select v-model="chatModel" :readonly="chatModels.length == 0">
                         <t-option v-for="v, k in chatModels" :key="k" :value="v" :label="v" />
                     </t-select>
                 </t-form-item>
