@@ -42,7 +42,19 @@ export default class HomeIndex extends Vue {
                 </t-image-viewer>
             </template>
             <template #footer>
-                <t-comment :author="item.Subject" :content="item.Prompt" />
+                <t-popup destroy-on-close hide-empty-popup>
+                    <a href="javascript:;">{{ item.Subject }}</a>
+                    <template #content>
+                        <div class="popup">
+                            <div v-if="item.Prompt">
+                                <b>描述：</b>{{ item.Prompt }}
+                            </div>
+                            <div v-if="item.NegativePrompt">
+                                <b>反向描述：</b>{{ item.NegativePrompt }}
+                            </div>
+                        </div>
+                    </template>
+                </t-popup>
             </template>
         </t-card>
     </VueFlexWaterfall>
@@ -61,5 +73,10 @@ export default class HomeIndex extends Vue {
     :deep(.t-image__wrapper) {
         min-height: 100px;
     }
+}
+
+.popup{
+    max-width: 50vw;
+    padding: 5px 10px;
 }
 </style>

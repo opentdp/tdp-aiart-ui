@@ -26,7 +26,6 @@ export class ArtworkModel extends HttpClient {
 
 export interface ArtworkOrig {
     UserId: string
-    Username: string
     Subject: string
     Prompt: string
     NegativePrompt: string
