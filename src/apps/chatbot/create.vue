@@ -3,13 +3,18 @@ import { Ref, Component, Vue } from "vue-facing-decorator"
 
 import { FormInstanceFunctions } from "tdesign-vue-next"
 
+import { MdPreview } from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
+
 import { NaApi } from "@/api"
 import { ChatbotMessageOrig } from "@/api/native/chatbot"
 
 import Prompts from "./prompt.json"
 import sessionStore from "@/store/session"
 
-@Component
+@Component({
+    components: { MdPreview }
+})
 export default class ChatbotCreate extends Vue {
     public session = sessionStore()
 
@@ -158,7 +163,7 @@ interface PromptItem {
                 <t-list-item :class="item.Role">
                     <t-list-item-meta :image="item.Role == 'user' ? session.Avatar : botAvatar">
                         <template #description>
-                            <div v-markdown="item.Content" class="message" />
+                            <MdPreview v-model="item.Content" :editor-id="'md-' + k" class="message" />
                         </template>
                     </t-list-item-meta>
                     <template v-if="item.Role == 'user' && chatRecord.length == k + 1" #action>
@@ -242,6 +247,7 @@ interface PromptItem {
 <style lang="scss" scoped>
 .message {
     word-wrap: break-word;
+    --md-bk-color: transparent;
 }
 
 .select-list {

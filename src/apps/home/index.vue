@@ -8,9 +8,7 @@ import { ArtworkItem } from "@/api/native/artwork"
 import sessionStore from "@/store/session"
 
 @Component({
-    components: {
-        VueFlexWaterfall,
-    },
+    components: { VueFlexWaterfall }
 })
 export default class HomeIndex extends Vue {
     public session = sessionStore()
@@ -34,8 +32,7 @@ export default class HomeIndex extends Vue {
 </script>
 
 <template>
-    <VueFlexWaterfall align-content="start" col="4" col-spacing="10" :break-by-container="true"
-        :break-at="{ 2330: 8, 2070: 7, 1810: 6, 1550: 5, 1290: 4, 1030: 3, 770: 2, 510: 1 }">
+    <VueFlexWaterfall align-content="start" col="4" col-spacing="10" :break-by-container="true" :break-at="{ 2330: 8, 2070: 7, 1810: 6, 1550: 5, 1290: 4, 1030: 3, 770: 2, 510: 1 }">
         <t-card v-for="item in images" :key="item.Id" theme="poster2" class="item">
             <template #default>
                 <t-image-viewer :images="[item.OutputFile]">
