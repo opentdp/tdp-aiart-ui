@@ -10,9 +10,7 @@ import sessionStore from "@/store/session"
 import ArtworkUpdate from "./update.vue"
 
 @Component({
-    components: {
-        ArtworkUpdate, VueFlexWaterfall,
-    },
+    components: { ArtworkUpdate, VueFlexWaterfall }
 })
 export default class ArtworkList extends Vue {
     public session = sessionStore()
@@ -117,7 +115,7 @@ export default class ArtworkList extends Vue {
     }
 }
 
-.popup{
+.popup {
     max-width: 50vw;
     padding: 10px;
 }
